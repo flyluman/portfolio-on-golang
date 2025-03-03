@@ -9,6 +9,8 @@ import (
 
 func GetWhoami(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Access-Control-Allow-Origin", "https://flyluman.github.io")
+
 	whoami := models.WhoAmI{
 		IP:      r.Header.Get("IP"),
 		ISP:     r.Header.Get("ISP"),
