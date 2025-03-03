@@ -9,11 +9,13 @@ import (
 )
 
 type APIServer struct {
-	addr string
+	addr     string
+	certFile string
+	keyFile  string
 }
 
-func NewAPIServer(addr string) *APIServer {
-	return &APIServer{addr: addr}
+func NewAPIServer(addr, certFile, keyFile string) *APIServer {
+	return &APIServer{addr: addr, certFile: certFile, keyFile: keyFile}
 }
 
 func (s *APIServer) Run() error {
@@ -26,6 +28,6 @@ func (s *APIServer) Run() error {
 
 	handler := middleware.Logger(mux)
 
-	log.Println("🚀 Server is running on", s.addr)
-	return http.ListenAndServe(s.addr, handler)
+	log.Println("🚀 Server is running on https://luman.mooo.com", s.addr)
+	return http.ListenAndServeTLS(s.addr, s.certFile, s.keyFile, handler)
 }

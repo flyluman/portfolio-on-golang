@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/flyluman/portfolio-on-golang/internal/database"
@@ -12,13 +14,28 @@ import (
 	"github.com/flyluman/portfolio-on-golang/internal/models"
 )
 
+func getClientIP(r *http.Request) string {
+	xForwardedFor := r.Header.Get("X-Forwarded-For")
+	if xForwardedFor != "" {
+		ips := strings.Split(xForwardedFor, ",")
+		return strings.TrimSpace(ips[0])
+	}
+
+	ip := r.RemoteAddr
+	host, _, err := net.SplitHostPort(ip)
+	if err != nil {
+		return ip
+	}
+	return host
+}
+
 func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// start := time.Now()
 
 		if r.URL.Path != "/query" && r.Method != "POST" {
 
-			resp, err := http.Get(fmt.Sprintf("http://ipwhois.app/json/%s?objects=ip,isp,city,country", "1.1.1.1"))
+			resp, err := http.Get(fmt.Sprintf("http://ipwhois.app/json/%s?objects=ip,isp,city,country", getClientIP(r)))
 			if err != nil {
 				log.Println("Error getting IP info:", err)
 				next.ServeHTTP(w, r)

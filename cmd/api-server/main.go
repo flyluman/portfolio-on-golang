@@ -15,6 +15,6 @@ func main() {
 	database.InitDB()
 	defer database.DB.Close()
 
-	server := services.NewAPIServer(os.Getenv("PORT"))
+	server := services.NewAPIServer(os.Getenv("PORT"), os.Getenv("CERTFILE"), os.Getenv("KEYFILE"))
 	log.Fatal(server.Run())
 }
