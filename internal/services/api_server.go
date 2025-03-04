@@ -21,10 +21,10 @@ func NewAPIServer(addr, certFile, keyFile string) *APIServer {
 func (s *APIServer) Run() error {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", handlers.GetRoot)
-	mux.HandleFunc("/whoami", handlers.GetWhoami)
-	mux.HandleFunc("/messenger", handlers.PostMessenger)
-	mux.HandleFunc("/query", handlers.PostQuery)
+	mux.HandleFunc("GET /", handlers.GetRoot)
+	mux.HandleFunc("GET /whoami", handlers.GetWhoami)
+	mux.HandleFunc("POST /messenger", handlers.PostMessenger)
+	mux.HandleFunc("POST /query", handlers.PostQuery)
 
 	handler := middleware.Logger(mux)
 
